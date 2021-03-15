@@ -1,1 +1,26 @@
+<%= @post.title %>
+<% @post.categories.each do |c| %>
+    <%= c.name %>
+<% end  %>
+<%= @post.content %>
+<% @post.users_who_commented.each do |username|%>
+    <%= link_to username, user_path(User.find_by(username: username)) %>
+<% end %>
+<%  @post.comments.each do |comment| %>
+    <%= comment.user.username + " says: "+ comment.content %>
+<% end %>
+
+
+<%= form_for @post.comments.build do |f| %>
+    <%=f.hidden_field :post_id %>
+   <%= f.label "Create a Comment" %>
+    <%= f.text_field :content %>
+    <%= f.label "Choose and existing User" %>
+    <%= f.collection_select :user_id, User.all, :id, :username, include_blank: 'blah' %>
+    <%= f.fields_for :user, User.new do |users_fields|%>
+    <%= users_fields.label "User" %>
+    <%= users_fields.text_field :username %>
+    <% end %>
+  <%= f.submit %>
+<% end %>
 
